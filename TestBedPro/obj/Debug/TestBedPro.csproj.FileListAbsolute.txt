@@ -1,0 +1,28 @@
+C:\Users\REDNECK\documents\visual studio 2013\Projects\TestBedPro\TestBedPro\bin\Debug\TestBedPro.exe.config
+C:\Users\REDNECK\documents\visual studio 2013\Projects\TestBedPro\TestBedPro\bin\Debug\TestBedPro.exe
+C:\Users\REDNECK\documents\visual studio 2013\Projects\TestBedPro\TestBedPro\bin\Debug\TestBedPro.pdb
+C:\Users\REDNECK\documents\visual studio 2013\Projects\TestBedPro\TestBedPro\bin\Debug\itextsharp.dll
+C:\Users\REDNECK\documents\visual studio 2013\Projects\TestBedPro\TestBedPro\bin\Debug\itextsharp.xml
+C:\Users\REDNECK\documents\visual studio 2013\Projects\TestBedPro\TestBedPro\bin\Debug\Interop.DTAcq32Lib.dll
+C:\Users\REDNECK\documents\visual studio 2013\Projects\TestBedPro\TestBedPro\bin\Debug\AxInterop.DTAcq32Lib.dll
+C:\Users\REDNECK\documents\visual studio 2013\Projects\TestBedPro\TestBedPro\obj\Debug\Interop.DTAcq32Lib.dll
+C:\Users\REDNECK\documents\visual studio 2013\Projects\TestBedPro\TestBedPro\obj\Debug\AxInterop.DTAcq32Lib.dll
+C:\Users\REDNECK\documents\visual studio 2013\Projects\TestBedPro\TestBedPro\obj\Debug\TestBedPro.csproj.ResolveComReference.cache
+C:\Users\REDNECK\documents\visual studio 2013\Projects\TestBedPro\TestBedPro\obj\Debug\TestBedPro.Properties.Resources.resources
+C:\Users\REDNECK\documents\visual studio 2013\Projects\TestBedPro\TestBedPro\obj\Debug\TestBedPro.csproj.GenerateResource.Cache
+C:\Users\REDNECK\documents\visual studio 2013\Projects\TestBedPro\TestBedPro\obj\Debug\TestBedPro.exe
+C:\Users\REDNECK\documents\visual studio 2013\Projects\TestBedPro\TestBedPro\obj\Debug\TestBedPro.pdb
+C:\Users\REDNECK\Documents\Visual Studio 2013\Projects\TestBedPro\TestBedPro\obj\Debug\TestBedPro.TestBedPro.resources
+C:\Users\REDNECK\Documents\Visual Studio 2013\Projects\TestBedPro\TestBedPro\obj\Debug\TestBedPro.Podesavanja.resources
+C:\Users\REDNECK\Documents\Visual Studio 2013\Projects\TestBedPro\TestBedPro\obj\Debug\TestBedPro.Upit.resources
+C:\Users\REDNECK\documents\visual studio 2013\Projects\TestBedPro\TestBedPro\bin\Debug\Modbus.dll
+C:\Users\REDNECK\documents\visual studio 2013\Projects\TestBedPro\TestBedPro\bin\Debug\log4net.dll
+C:\Users\REDNECK\documents\visual studio 2013\Projects\TestBedPro\TestBedPro\bin\Debug\Unme.Common.dll
+C:\Users\REDNECK\Documents\Visual Studio 2013\Projects\TestBedPro\TestBedPro\obj\Debug\TestBedPro.csprojResolveAssemblyReference.cache
+C:\Users\REDNECK\documents\visual studio 2013\Projects\TestBedPro\TestBedPro\obj\Debug\TestBedPro.UpitP.resources
+C:\git-projects\eko-pump-master\TestBedPro\bin\Debug\TestBedPro.exe.config
+C:\git-projects\eko-pump-master\TestBedPro\obj\Debug\Interop.DTAcq32Lib.dll
+C:\git-projects\eko-pump-master\TestBedPro\obj\Debug\AxInterop.DTAcq32Lib.dll
+C:\git-projects\eko-pump-master\TestBedPro\obj\Debug\TestBedPro.csproj.ResolveComReference.cache
+C:\git-projects\eko-pump-master\TestBedPro\obj\Debug\TestBedPro.exe
+C:\git-projects\eko-pump-master\TestBedPro\obj\Debug\TestBedPro.pdb
