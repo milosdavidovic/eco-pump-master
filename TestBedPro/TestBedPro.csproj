@@ -89,9 +89,11 @@
     </Compile>
     <EmbeddedResource Include="Podesavanja.resx">
       <DependentUpon>Podesavanja.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="TestBedPro.resx">
       <DependentUpon>TestBedPro.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -104,6 +106,7 @@
     </Compile>
     <EmbeddedResource Include="Upit.resx">
       <DependentUpon>Upit.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="UpitP.resx">
       <DependentUpon>UpitP.cs</DependentUpon>

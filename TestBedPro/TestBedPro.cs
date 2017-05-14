@@ -16,22 +16,18 @@ using Modbus.Device;
 using System.IO.Ports;
 using iTextSharp.text.pdf;
 using System.Globalization;
+using System.Diagnostics;
 namespace TestBedPro
 {
     public partial class TestBedPro : Form
     {
         SerialPort serialPort = new SerialPort(); //Create a new SerialPort object.
             
-        private AnalogInputSubsystem ainSS;
-        private DeviceMgr deviceMgr = DeviceMgr.Get();
-        private Device device = null;
+       
 
       //  int BuffersCompleted;
         RadnaTacka radnaTacka= new RadnaTacka();
-        DataTable OlBufferDataTable;
-        DataColumn channelDataColumn;
-
-        private OlBuffer[] daqBuffers;
+      
 
         int pritisak1;
         int protok1;
@@ -41,16 +37,16 @@ namespace TestBedPro
         double skalaP = 1;
 
         int nulaY= 375;
-        int nulaX = 44;
+        int nulaX = 73;
         int nulaP = 588;
 
         int klikX = 1;
         int klikY = 1;
         int klikP = 1;
 
-        int xtacka = 0;
-        int ytacka = 0;
-        int ptacka = 0;
+        int xtacka = 1;
+        int ytacka = 1;
+        int ptacka = 1;
 
         List <RadnaTacka> krivaPerformansi= new List<RadnaTacka>();
         
@@ -62,54 +58,16 @@ namespace TestBedPro
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            string[] deviceNames = deviceMgr.GetDeviceNames();
-
-            for (int i = 0; i < deviceNames.Length; ++i)
-            {
-                deviceComboBox.Items.Add(deviceNames[i]);
-            }
-
-            if (deviceComboBox.Items.Count > 0)
-            {
-                deviceComboBox.SelectedIndex = 0;
-            }
-            // Initialize the data table to contain 10 raws where
-            // each raw is associated with an acuired sample 
-            OlBufferDataTable = new DataTable("OlBuffer");
-           
-
-            DataRow newRow;
-
-            // Setup the data table to display 10 samples
-            for (int i = 0; i < 10; i++)
-            {
-                newRow = OlBufferDataTable.NewRow();
-                OlBufferDataTable.Rows.Add(newRow);
-            }
-
-
-            // Add one column to the data table to represetn one channel
-            channelDataColumn = new DataColumn("Channel", typeof(double));
-
-            OlBufferDataTable.Columns.Add(channelDataColumn);
-
+            pictureBox1.Paint += pictureBox1_Paint;
         }
+
         private void btn_init_Click(object sender, System.EventArgs e)
         {
-            string keyvalue = ConfigurationManager.AppSettings["keyname"].ToString();
-            int numberOfBuffers = Convert.ToInt32(ConfigurationManager.AppSettings["NumberOfbuffers"]);
-
-            string clockFreq = ConfigurationManager.AppSettings["clockFreq"].ToString();
-            string sensor0gain = ConfigurationManager.AppSettings["sensor0gain"].ToString();
-            string sensor1gain = ConfigurationManager.AppSettings["sensor1gain"].ToString();
-            string sensor0offset = ConfigurationManager.AppSettings["sensor0offset"].ToString();
-            string sensor1offset = ConfigurationManager.AppSettings["sensor1offset"].ToString();
-            string samplesPerBuffer = ConfigurationManager.AppSettings["samplesPerBuffer"];
-
-            statusBarPanel.Text = "No Error";
-
-            string deviceName = (string)deviceComboBox.SelectedItem;
-
+            timer1.Interval = 500;
+            timer1.Enabled = true;
+            timer1.Tick += timer1_Tick;
+            timer1.Start();
+           
             try
             {
                 serialPort.PortName = "COM1";
@@ -123,112 +81,24 @@ namespace TestBedPro
             {
                 MessageBox.Show("Port je vec otvoren" + ex.ToString());
             }
-
-
-            try
-            {
-                // Create the device object
-                device = deviceMgr.GetDevice(deviceName);
-
-                // Create the device's analog input subsystem wiht element zero
-                ainSS = device.AnalogInputSubsystem(0);
-
-                // Create an event handler delegate to handle driver runtime error events
-                ainSS.DriverRunTimeErrorEvent += new DriverRunTimeErrorEventHandler(HandleDriverRunTimeErrorEvent);
-
-                // Create an event handler delegate to handle buffer done events
-                ainSS.BufferDoneEvent += new BufferDoneHandler(HandleBufferDone);
-
-                // Create an event handler delegate to handle queue done events
-                ainSS.QueueDoneEvent += new QueueDoneHandler(HandleQueueDone);
-
-                // Create and event handler delegate to handle queue stopped events
-                ainSS.QueueStoppedEvent += new QueueStoppedHandler(HandleQueueStopped);
-            }
-            catch (OlException ex)
-            {
-                string err = ex.Message;
-                statusBarPanel.Text = err;
-                return;
-            }
-
-            if (device == null)
-            {
-                MessageBox.Show("No Device Selected.", "Error");
-                return;
-            }
-            try
-            {
-                // int numberOfBuffers = Convert.ToInt32(6);
-                // Free all previously allocated buffers in case we are updating the number
-                // or the size of buffers
-                ainSS.BufferQueue.FreeAllQueuedBuffers();
-
-                daqBuffers = new OlBuffer[Convert.ToInt32(numberOfBuffers)];
-
-                // Create the buffers to store the raw data
-                // Place the buffers onto the queue of analog input subsystem 
-                for (int i = 0; i < numberOfBuffers; ++i)
-                {
-                    daqBuffers[i] = new OlBuffer(int.Parse(samplesPerBuffer), ainSS);
-
-                    ainSS.BufferQueue.QueueBuffer(daqBuffers[i]);
-                }
-
-                // Set the data flow to continuous to setup for buffered I/O
-                ainSS.DataFlow = DataFlow.Continuous;
-
-                // Update the Clock object with the frequency
-                ainSS.Clock.Frequency = float.Parse(clockFreq);
-
-                // Clear the analog input subsystem channel list
-                ainSS.ChannelList.Clear();
-
-                int physicalChannelNumber = Convert.ToInt32(0);
-
-                // Create a channel object and add it to the channel list of the 
-                // analog input subsystem
-                SupportedChannelInfo channelInfo = ainSS.SupportedChannels.GetChannelInfo(SubsystemType.AnalogInput, 0);
-                SupportedChannelInfo channelInfo1 = ainSS.SupportedChannels.GetChannelInfo(SubsystemType.AnalogInput, 1);
-                // Set the channel sensor parameters
-                channelInfo.SensorGain = Convert.ToDouble(sensor0gain);
-                channelInfo.SensorOffset = Convert.ToDouble(sensor0offset);
-
-                channelInfo1.SensorGain = Convert.ToDouble(sensor1gain);
-                channelInfo1.SensorOffset = Convert.ToDouble(sensor1offset);
-
-                ChannelListEntry channelToRead = new ChannelListEntry(channelInfo);
-                ChannelListEntry channelToRead1 = new ChannelListEntry(channelInfo1);
-
-                // Add the channel object to the channel list
-                ainSS.ChannelList.Add(channelToRead);
-                ainSS.ChannelList.Add(channelToRead1);
-                // Configure the subsystem to apply all the previous settings to the hardware
-                ainSS.Config();
-
-                // Check the closest clock frequency set by the hardware
-                clockFreq = String.Format("{0:0.000}", ainSS.Clock.Frequency);
-
-                btn_start.Enabled = true;
-            }
-            catch (OlException ex)
-            {
-                string err = ex.Message;
-                statusBarPanel.Text = err;
-                return;
-            }
+           
         }
         //konekcija na ModBus
-        
-        
+                
        private void TimerEventProcessor(object sender, EventArgs e)
         {
             if (serialPort.IsOpen)
             {
                 ModbusSerialMaster master = ModbusSerialMaster.CreateRtu(serialPort);
-                master.Transport.ReadTimeout = 500;
+                master.Transport.ReadTimeout = 1000;
                 try
                 {
+                    ushort[] HH = master.ReadInputRegisters(2, 550, 1);
+                    ushort[] QQ = master.ReadInputRegisters(2, 551, 1);
+                   // if(slave2test.Count()>0)
+                    radnaTacka._h = HH[0];
+                    radnaTacka._q = QQ[0];
+
                     ushort[] bratee = master.ReadInputRegisters(1, 28, 12);
                     ushort[] snaga = master.ReadInputRegisters(1, 0, 12);
                     ushort[] cosfi = master.ReadInputRegisters(1, 10, 2);
@@ -249,25 +119,21 @@ namespace TestBedPro
                     radnaTacka._p3p = Convert.ToDouble(pString[4]) * Math.Pow(10, (short)snaga[5]);
                     radnaTacka._cosphi3p = Convert.ToDouble(pString[10]) * Math.Pow(10, (short)snaga[11]);
 
-                    lbl_uL1.Text = radnaTacka._uL1.ToString();
-                    lbl_uL2.Text = radnaTacka._uL2.ToString();
-                    lbl_uL3.Text = radnaTacka._uL3.ToString();
-
-                    lbl_iL1.Text = radnaTacka._iL1.ToString();
-                    lbl_iL2.Text = radnaTacka._iL2.ToString();
-                    lbl_iL3.Text = radnaTacka._iL3.ToString();
-
-                    lbl_u3p.Text = radnaTacka._u3p.ToString();
-                    lbl_i3p.Text = radnaTacka._i3p.ToString();
-                    lbl_p3p.Text = radnaTacka._p3p.ToString();
-                    lbl_cosphi3p.Text = radnaTacka._cosphi3p.ToString();
+                    // u pboxu
+                    //lbl_h.Text = radnaTacka._h.ToString();
+                    //lbl_q.Text = radnaTacka._q.ToString();
+                }
+                catch(TimeoutException tex)
+                {
+                    Debug.WriteLine(tex.Message);
+                    textBox2.Text = tex.Message;
                 }
                 catch (Exception ex)
                 {
                     MessageBox.Show(ex.ToString());
 
                 }
-            }               
+            }
         }
         // povlači krivu sa GPC
         private void btn_da_Click(object sender, EventArgs e)
@@ -292,105 +158,19 @@ namespace TestBedPro
         }
 
         
-        public void HandleQueueStopped(object sender, GeneralEventArgs eventData)
-        {
-            if (this.InvokeRequired)
-            {
-                this.Invoke(new QueueStoppedHandler(HandleQueueStopped), new object[] { sender, eventData });
-            }
-            else
-            {
-                string msg = String.Format("Queue Stopped received on subsystem {0} element {1} at time {2}",
-                    eventData.Subsystem, eventData.Subsystem.Element,
-                    eventData.DateTime.ToString("T"));
-
-                statusBarPanel.Text = msg;
-            }
-        }
-        public void HandleBufferDone(object sender, BufferDoneEventArgs bufferDoneData)
-        {
-            double pritisak = 0;
-            double protok = 0;
-            if (this.InvokeRequired)
-            {
-                this.Invoke(new BufferDoneHandler(HandleBufferDone), new object[] { sender, bufferDoneData });
-            }
-            else
-            {
-                OlBuffer olBuffer = bufferDoneData.OlBuffer;
-
-                if (olBuffer.ValidSamples > 0)
-                {
-                    //Get the data as sensor values
-                    double[] buf = olBuffer.GetDataAsSensor();
-
-                    //if (continuousRadioButton.Checked)
-                    // To keep the acquisition running, requeue the completed buffer
-                    ainSS.BufferQueue.QueueBuffer(olBuffer);
-
-                    // Output the first 10 samples to the user form 
-                    for (int i = 0; i < 20; ++i)
-                    {
-                        // OlBufferDataTable.Rows[i][0] = buf[i];
-                        if (IsOdd(i))
-                            pritisak += buf[i];
-                        else
-                            protok += buf[i];
-                    }
-                    
-                    lbl_h.Text = Math.Round(pritisak / 10, 2).ToString();
-                    lbl_q.Text = Math.Round(protok / 10, 2).ToString();
-                   
-                    skalaX = (double)xtacka / ((double)klikX - (double)nulaX);
-                    skalaY =  (double)ytacka /  ((double)nulaY - (double)klikY);
-                    skalaP = (double)ptacka / ((double)nulaP - (double)klikP);
-
-                    pritisak1 = nulaY - Convert.ToInt32(pritisak / 10 / skalaY);
-                    protok1 = nulaX + Convert.ToInt32(protok / 10 / skalaX);
-              
-                    this.Invoke( new EventHandler(TimerEventProcessor));
-                 }
-            }
-        }
-
         
 
-
-        public static bool IsOdd(int value)
+        private void timer1_Tick(object sender, EventArgs e)
         {
-            return value % 2 != 0;
+           //this.Invoke(new EventHandler(TimerEventProcessor));
+       
+           pictureBox1.Invalidate();
         }
 
-        public void HandleQueueDone(object sender, GeneralEventArgs eventData)
-        {
-            if (this.InvokeRequired)
-            {
-                this.Invoke(new QueueDoneHandler(HandleQueueDone), new object[] { sender, eventData });
-            }
-            else
-            {
-                string msg = String.Format("Queue Done received on {0} element {1} at time {2}",
-                eventData.Subsystem, eventData.Subsystem.Element,
-                eventData.DateTime.ToString("T"));
-                statusBarPanel.Text = msg;
-            }
-        }
+ 
+        
 
-        public void HandleDriverRunTimeErrorEvent(object sender, DriverRunTimeErrorEventArgs eventData)
-        {
-            if (this.InvokeRequired)
-            {
-                this.Invoke(new DriverRunTimeErrorEventHandler(HandleDriverRunTimeErrorEvent),
-                    new object[] { sender, eventData });
-            }
-            else
-            {
-                string msg = String.Format("Error: {0} Occured on subsystem {1} element {2} at time {3}",
-                eventData.Message, eventData.Subsystem, eventData.Subsystem.Element,
-                eventData.DateTime.ToString("T"));
-                MessageBox.Show(msg, "Error");
-            }
-        }
+       
 
         private void txt_prodNo_TextChanged(object sender, EventArgs e)
         {
@@ -399,36 +179,7 @@ namespace TestBedPro
 
         private void btn_start_Click(object sender, EventArgs e)
         {
-            string keyvalue = ConfigurationManager.AppSettings["keyname"];
-            int numberOfBuffers = Convert.ToInt32(ConfigurationManager.AppSettings["NumberOfbuffers"]);
-            string clockFreq = ConfigurationManager.AppSettings["clockFreq"];
-            string sensor0gain = ConfigurationManager.AppSettings["sensor0gain"];
-            string sensor1gain = ConfigurationManager.AppSettings["sensor1gain"];
-            string sensor0offset = ConfigurationManager.AppSettings["sensor0offset"];
-            string sensor1offset = ConfigurationManager.AppSettings["sensor1offset"];
-
-            try
-            {
-                statusBarPanel.Text = "";
-
-                // If a buffer is not in the BufferQueue, queue it otherwise
-                // skip it.
-                for (int i = 0; i < numberOfBuffers; i++)
-                {
-                    if ((daqBuffers[i].State == OlBuffer.BufferState.Idle) ||
-                        (daqBuffers[i].State == OlBuffer.BufferState.Completed))
-                        ainSS.BufferQueue.QueueBuffer(daqBuffers[i]);
-                }
-
-                // Start the data acquisition process
-                ainSS.Start();
-            }
-            catch (OlException ex)
-            {
-                string err = ex.Message;
-                statusBarPanel.Text = err;
-                return;
-            }			
+            
         }
 
         private void podešavanjaToolStripMenuItem_Click(object sender, EventArgs e)
@@ -510,11 +261,39 @@ namespace TestBedPro
         // crtanje krstica po pictureBox1
         private void pictureBox1_Paint(object sender, PaintEventArgs e)
         {
+
+            lbl_uL1.Text = radnaTacka._uL1.ToString();
+            lbl_uL2.Text = radnaTacka._uL2.ToString();
+            lbl_uL3.Text = radnaTacka._uL3.ToString();
+
+            lbl_iL1.Text = radnaTacka._iL1.ToString();
+            lbl_iL2.Text = radnaTacka._iL2.ToString();
+            lbl_iL3.Text = radnaTacka._iL3.ToString();
+
+            lbl_u3p.Text = radnaTacka._u3p.ToString();
+            lbl_i3p.Text = radnaTacka._i3p.ToString();
+            lbl_p3p.Text = radnaTacka._p3p.ToString();
+            lbl_cosphi3p.Text = radnaTacka._cosphi3p.ToString();
+
+            lbl_h.Text = Math.Round(radnaTacka._h / 10, 2).ToString();
+            lbl_q.Text = Math.Round(radnaTacka._q / 10, 2).ToString();
+
+            skalaX = (double)xtacka / ((double)klikX - (double)nulaX);
+            skalaY = (double)ytacka / ((double)nulaY - (double)klikY);
+            skalaP = (double)ptacka / ((double)nulaP - (double)klikP);
+
+            try
+            {
+                pritisak1 = nulaY - Convert.ToInt32(radnaTacka._h / 10 / skalaY);
+                protok1 = nulaX + Convert.ToInt32(radnaTacka._q / 10 / skalaX);
+            }
+            catch { }
+            
             Pen myPen1 = new Pen(Color.DarkBlue, 2);
             Pen myPen2 = new Pen(Color.Red, 2);
             Pen myPen3 = new Pen(Color.Green, 2);
 
-            pictureBox1.Refresh();
+            //pictureBox1.Refresh();
             //crtaj krsic za svaku radnu tacku u krivoj performansi
             foreach (RadnaTacka rT in krivaPerformansi)
             {
@@ -528,11 +307,14 @@ namespace TestBedPro
                 e.Graphics.DrawLine(myPen3, tempX - 10, tempP, tempX + 10, tempP);
                 e.Graphics.DrawLine(myPen3, tempX, tempP - 10, tempX, tempP + 10);
 
-                pictureBox1.Invalidate();
+               // pictureBox1.Invalidate();
             }
-
+            
             e.Graphics.DrawLine(myPen2, protok1 - 10, pritisak1, protok1 + 10, pritisak1);
             e.Graphics.DrawLine(myPen2, protok1, pritisak1 - 10, protok1, pritisak1 + 10);
+
+            this.Invoke(new EventHandler(TimerEventProcessor));
+
         }
         // ###########################################################################
         // podešavanja za ExportPDF
@@ -700,6 +482,8 @@ namespace TestBedPro
         {
 
         }
+
+        
 
        
       
