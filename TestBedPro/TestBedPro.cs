@@ -10,7 +10,6 @@ using System.Windows.Forms;
 using System.IO;
 using iTextSharp.text;
 using iTextSharp;
-using OpenLayers.Base;
 using System.Configuration;
 using Modbus.Device;
 using System.IO.Ports;
@@ -24,13 +23,10 @@ namespace TestBedPro
 {
     public partial class TestBedPro : Form
     {
-        SerialPort serialPort = new SerialPort(); //Create a new SerialPort object.
-            
-       
-
-      //  int BuffersCompleted;
-        RadnaTacka radnaTacka= new RadnaTacka();
-        
+        SerialPort _serialPort; 
+        ModbusDevice _device;
+        RadnaTacka _radnaTacka;
+        List<RadnaTacka> _krivaPerformansi;
 
         int pritisak1;
         int protok1;
@@ -51,116 +47,97 @@ namespace TestBedPro
         int ytacka = 1;
         int ptacka = 1;
 
-        List <RadnaTacka> krivaPerformansi= new List<RadnaTacka>();
-        
-
         public TestBedPro()
         {
             InitializeComponent();
+
+            _serialPort = new SerialPort();
+            _device = new ModbusDevice();
+            _radnaTacka = new RadnaTacka();
+            _krivaPerformansi = new List<RadnaTacka>();
+        }
+
+        private void Initialize()
+        {
+            pictureBox1.Paint += pictureBox1_Paint;
+
+            timer1.Interval = 1000;
+            timer1.Tick += timer1_Tick;
+
+            _serialPort.PortName = "COM1";
+            _serialPort.BaudRate = 9600;
+            _serialPort.DataBits = 8;
+            _serialPort.Parity = Parity.None;
+            _serialPort.StopBits = StopBits.One;
         }
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            pictureBox1.Paint += pictureBox1_Paint;
+            Initialize();
         }
 
-        private void btn_init_Click(object sender, System.EventArgs e)
+        private void btn_start_Click(object sender, System.EventArgs e)
         {
-            timer1.Interval = 500;
-            timer1.Enabled = true;
-            timer1.Tick += timer1_Tick;
-            timer1.Start();
-           
+            if (!timer1.Enabled)
+            {
+                timer1.Start();
+                timer1.Enabled = true;
+            }
             try
             {
-                serialPort.PortName = "COM1";
-                serialPort.BaudRate = 9600;
-                serialPort.DataBits = 8;
-                serialPort.Parity = Parity.None;
-                serialPort.StopBits = StopBits.One;
-                serialPort.Open();
+                if (!_serialPort.IsOpen)
+                {
+                    _serialPort.Open();
+
+                }
+                else
+                {
+                    MessageBox.Show("Port je vec otvoren '{0}'.", _serialPort.PortName);
+                }
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Port je vec otvoren" + ex.ToString());
+                MessageBox.Show("Greska prilikom otvaranja porta!\n {0}", ex.Message);
             }
-
-            Thread t = new Thread(TimerEventProcessor);
-            t.Start();
            
         }
-        //konekcija na ModBus
-                
-       private void TimerEventProcessor()
+
+        private void btn_stop_Click(object sender, EventArgs e)
         {
-           while(true)
-           {
-               int milliseconds = 500;
-               Thread.Sleep(milliseconds);
+            if (timer1.Enabled)
+            {
+                timer1.Stop();
+                timer1.Enabled = false;
+            }
+            try
+            {
+                if (_serialPort.IsOpen)
+                {
+                    _serialPort.Close();
 
-               if (serialPort.IsOpen)
-               {
-                   ModbusSerialMaster master = ModbusSerialMaster.CreateRtu(serialPort);
-                   master.Transport.ReadTimeout = 1000;
-
-                   try
-                   {
-                       ushort[] HH = master.ReadInputRegisters(2, 550, 1);
-                       ushort[] QQ = master.ReadInputRegisters(2, 551, 1);
-                       // if(slave2test.Count()>0)
-                       radnaTacka._h = HH[0];
-                       radnaTacka._q = QQ[0];
-
-                       ushort[] bratee = master.ReadInputRegisters(1, 28, 12);
-                       ushort[] snaga = master.ReadInputRegisters(1, 0, 12);
-                       ushort[] cosfi = master.ReadInputRegisters(1, 10, 2);
-
-                       string[] riRString = bratee.Select(x => x.ToString("X")).ToArray();
-                       string[] pString = snaga.Select(x => x.ToString("X")).ToArray();
-                       short output = short.Parse(riRString[0], NumberStyles.HexNumber);
-
-                       radnaTacka._uL1 = Convert.ToDouble(riRString[0]) * Math.Pow(10, (short)bratee[1]);
-                       radnaTacka._uL2 = Convert.ToDouble(riRString[2]) * Math.Pow(10, (short)bratee[3]);
-                       radnaTacka._uL3 = Convert.ToDouble(riRString[4]) * Math.Pow(10, (short)bratee[5]);
-                       radnaTacka._iL1 = Convert.ToDouble(riRString[6]) * Math.Pow(10, (short)bratee[7]);
-                       radnaTacka._iL2 = Convert.ToDouble(riRString[8]) * Math.Pow(10, (short)bratee[9]);
-                       radnaTacka._iL3 = Convert.ToDouble(riRString[10]) * Math.Pow(10, (short)bratee[11]);
-
-                       radnaTacka._u3p = Convert.ToDouble(pString[0]) * Math.Pow(10, (short)snaga[1]);
-                       radnaTacka._i3p = Convert.ToDouble(pString[2]) * Math.Pow(10, (short)snaga[3]);
-                       radnaTacka._p3p = Convert.ToDouble(pString[4]) * Math.Pow(10, (short)snaga[5]);
-                       radnaTacka._cosphi3p = Convert.ToDouble(pString[10]) * Math.Pow(10, (short)snaga[11]);
-
-                       // u pboxu
-                       //lbl_h.Text = radnaTacka._h.ToString();
-                       //lbl_q.Text = radnaTacka._q.ToString();
-                   }
-                   catch (TimeoutException tex)
-                   {
-                       Debug.WriteLine(tex.Message);
-                       textBox2.Text = tex.Message;
-                   }
-                   catch (Exception ex)
-                   {
-                       MessageBox.Show(ex.ToString());
-
-                   }
-               }
+                }
+                else
+                {
+                    MessageBox.Show("Port je vec zatvoren '{0}'.", _serialPort.PortName);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Greska prilikom zatvaranja porta!\n {0}", ex.Message);
             }
         }
+
         // povlači krivu sa GPC
         private void btn_da_Click(object sender, EventArgs e)
         {
 
-            
-            
             tehKar karakteristike = new tehKar(txt_prodNo.Text);
-            
+
             double x = karakteristike._CurveSetX.maximum;
             double y = karakteristike._CurveSetY.maximum;
 
-            labelX.Text = "Q max"+x.ToString();
-            labelY.Text = "H max"+y.ToString();
+            labelX.Text = "Q max" + x.ToString();
+            labelY.Text = "H max" + y.ToString();
             try
             {
                 pictureBox1.Load((new Uri("https://product-selection.grundfos.com/product-detail.pumpcurve.png?productnumber=" + txt_prodNo.Text + "&frequency=50&languagecode=SRL&productrange=GMA&unitsystem=4&w=700&h=600&dpi=144")).ToString());
@@ -171,45 +148,30 @@ namespace TestBedPro
                 MessageBox.Show(ex.ToString());
             }
 
-           
-            
-            
-
-            
-
         }
-        
-        
 
         private void btn_refresh_Click(object sender, EventArgs e)
         {
            
-        }
-
-        
-        
+        }   
 
         private void timer1_Tick(object sender, EventArgs e)
         {
-           //this.Invoke(new EventHandler(TimerEventProcessor));
-       
+            try
+            {
+                _device.FetchData(_serialPort, 800);
+            }
+            catch (Exception ex)
+            {
+                //log error
+            }
+
            pictureBox1.Invalidate();
-           
         }
-
- 
-        
-
-       
 
         private void txt_prodNo_TextChanged(object sender, EventArgs e)
         {
 
-        }
-
-        private void btn_start_Click(object sender, EventArgs e)
-        {
-            
         }
 
         private void podešavanjaToolStripMenuItem_Click(object sender, EventArgs e)
@@ -257,7 +219,7 @@ namespace TestBedPro
         // dodavanje radne tacke u report
         private void btn_add_Click(object sender, EventArgs e)
         {
-            RadnaTacka temp = new RadnaTacka(radnaTacka);
+            RadnaTacka temp = new RadnaTacka(_radnaTacka);
             temp._q = Convert.ToDouble(lbl_q.Text);
             temp._h = Convert.ToDouble(lbl_h.Text);
             //radnaTacka._q = Convert.ToDouble(lbl_q.Text);
@@ -292,21 +254,21 @@ namespace TestBedPro
         private void pictureBox1_Paint(object sender, PaintEventArgs e)
         {
 
-            lbl_uL1.Text = radnaTacka._uL1.ToString();
-            lbl_uL2.Text = radnaTacka._uL2.ToString();
-            lbl_uL3.Text = radnaTacka._uL3.ToString();
+            lbl_uL1.Text = _radnaTacka._uL1.ToString();
+            lbl_uL2.Text = _radnaTacka._uL2.ToString();
+            lbl_uL3.Text = _radnaTacka._uL3.ToString();
 
-            lbl_iL1.Text = radnaTacka._iL1.ToString();
-            lbl_iL2.Text = radnaTacka._iL2.ToString();
-            lbl_iL3.Text = radnaTacka._iL3.ToString();
+            lbl_iL1.Text = _radnaTacka._iL1.ToString();
+            lbl_iL2.Text = _radnaTacka._iL2.ToString();
+            lbl_iL3.Text = _radnaTacka._iL3.ToString();
 
-            lbl_u3p.Text = radnaTacka._u3p.ToString();
-            lbl_i3p.Text = radnaTacka._i3p.ToString();
-            lbl_p3p.Text = radnaTacka._p3p.ToString();
-            lbl_cosphi3p.Text = radnaTacka._cosphi3p.ToString();
+            lbl_u3p.Text = _radnaTacka._u3p.ToString();
+            lbl_i3p.Text = _radnaTacka._i3p.ToString();
+            lbl_p3p.Text = _radnaTacka._p3p.ToString();
+            lbl_cosphi3p.Text = _radnaTacka._cosphi3p.ToString();
 
-            lbl_h.Text = Math.Round(radnaTacka._h / 10, 2).ToString();
-            lbl_q.Text = Math.Round(radnaTacka._q / 10, 2).ToString();
+            lbl_h.Text = Math.Round(_radnaTacka._h / 10, 2).ToString();
+            lbl_q.Text = Math.Round(_radnaTacka._q / 10, 2).ToString();
 
             skalaX = (double)xtacka / ((double)klikX - (double)nulaX);
             skalaY = (double)ytacka / ((double)nulaY - (double)klikY);
@@ -314,8 +276,8 @@ namespace TestBedPro
 
             try
             {
-                pritisak1 = nulaY - Convert.ToInt32(radnaTacka._h / 10 / skalaY);
-                protok1 = nulaX + Convert.ToInt32(radnaTacka._q / 10 / skalaX);
+                pritisak1 = nulaY - Convert.ToInt32(_radnaTacka._h / 10 / skalaY);
+                protok1 = nulaX + Convert.ToInt32(_radnaTacka._q / 10 / skalaX);
             }
             catch { }
             
@@ -398,9 +360,9 @@ namespace TestBedPro
             addCell(naslov, "Datum: "  , 1, 1, 1, 11, 0);
             addCell(naslov, DateTime.Today.Date.ToShortDateString(), 1, 1, 0, 11, 1);
             addCell(naslov, "Korisnik", 1, 1, 0, 11, 1);
-            addCell(naslov, radnaTacka._korisnik, 1, 1, 0, 11, 1);
+            addCell(naslov, _radnaTacka._korisnik, 1, 1, 0, 11, 1);
             
-            addCell(naslov, radnaTacka._referenca, 1, 1, 0, 11, 1);
+            addCell(naslov, _radnaTacka._referenca, 1, 1, 0, 11, 1);
             document.Add(naslov);
 
             // razmak
@@ -513,9 +475,5 @@ namespace TestBedPro
 
         }
 
-        
-
-       
-      
     }
 }

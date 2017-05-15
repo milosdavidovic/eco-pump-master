@@ -1,4 +1,6 @@
-﻿namespace TestBedPro
+﻿using System;
+
+namespace TestBedPro
 {
     partial class TestBedPro
     {
@@ -33,7 +35,7 @@
             this.txt_prodNo = new System.Windows.Forms.TextBox();
             this.btn_da = new System.Windows.Forms.Button();
             this.statusBarPanel = new System.Windows.Forms.StatusStrip();
-            this.btn_init = new System.Windows.Forms.Button();
+            this.btn_start = new System.Windows.Forms.Button();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
             this.lbl_q = new System.Windows.Forms.Label();
             this.lbl_h = new System.Windows.Forms.Label();
@@ -60,7 +62,7 @@
             this.lbl_uL3 = new System.Windows.Forms.Label();
             this.label12 = new System.Windows.Forms.Label();
             this.lbl_cosphi3p = new System.Windows.Forms.Label();
-            this.btn_start = new System.Windows.Forms.Button();
+            this.btn_stop = new System.Windows.Forms.Button();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.podešavanjaToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.podesavanjaToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -129,20 +131,20 @@
             // 
             // statusBarPanel
             // 
-            this.statusBarPanel.Location = new System.Drawing.Point(0, 964);
+            this.statusBarPanel.Location = new System.Drawing.Point(0, 719);
             this.statusBarPanel.Name = "statusBarPanel";
             this.statusBarPanel.Size = new System.Drawing.Size(1264, 22);
             this.statusBarPanel.TabIndex = 13;
             // 
-            // btn_init
+            // btn_start
             // 
-            this.btn_init.Location = new System.Drawing.Point(12, 33);
-            this.btn_init.Name = "btn_init";
-            this.btn_init.Size = new System.Drawing.Size(75, 23);
-            this.btn_init.TabIndex = 12;
-            this.btn_init.Text = "Init";
-            this.btn_init.UseVisualStyleBackColor = true;
-            this.btn_init.Click += new System.EventHandler(this.btn_init_Click);
+            this.btn_start.Location = new System.Drawing.Point(12, 33);
+            this.btn_start.Name = "btn_start";
+            this.btn_start.Size = new System.Drawing.Size(75, 23);
+            this.btn_start.TabIndex = 12;
+            this.btn_start.Text = "Start";
+            this.btn_start.UseVisualStyleBackColor = true;
+            this.btn_start.Click += new EventHandler(btn_start_Click);
             // 
             // dataGridView1
             // 
@@ -430,16 +432,16 @@
             this.lbl_cosphi3p.Text = "0";
             this.lbl_cosphi3p.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
-            // btn_start
+            // btn_stop
             // 
-            this.btn_start.Enabled = false;
-            this.btn_start.Location = new System.Drawing.Point(104, 33);
-            this.btn_start.Name = "btn_start";
-            this.btn_start.Size = new System.Drawing.Size(75, 23);
-            this.btn_start.TabIndex = 40;
-            this.btn_start.Text = "Start";
-            this.btn_start.UseVisualStyleBackColor = true;
-            this.btn_start.Click += new System.EventHandler(this.btn_start_Click);
+            this.btn_stop.Enabled = false;
+            this.btn_stop.Location = new System.Drawing.Point(104, 33);
+            this.btn_stop.Name = "btn_stop";
+            this.btn_stop.Size = new System.Drawing.Size(75, 23);
+            this.btn_stop.TabIndex = 40;
+            this.btn_stop.Text = "Stop";
+            this.btn_stop.UseVisualStyleBackColor = true;
+            this.btn_stop.Click += new System.EventHandler(btn_stop_Click);
             // 
             // menuStrip1
             // 
@@ -671,7 +673,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1264, 986);
+            this.ClientSize = new System.Drawing.Size(1264, 741);
             this.Controls.Add(this.labelY);
             this.Controls.Add(this.labelX);
             this.Controls.Add(this.dataGridView2);
@@ -690,7 +692,7 @@
             this.Controls.Add(this.h1);
             this.Controls.Add(this.pB_h);
             this.Controls.Add(this.pB_q);
-            this.Controls.Add(this.btn_start);
+            this.Controls.Add(this.btn_stop);
             this.Controls.Add(this.groupBox3);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
@@ -699,7 +701,7 @@
             this.Controls.Add(this.lbl_h);
             this.Controls.Add(this.lbl_q);
             this.Controls.Add(this.dataGridView1);
-            this.Controls.Add(this.btn_init);
+            this.Controls.Add(this.btn_start);
             this.Controls.Add(this.statusBarPanel);
             this.Controls.Add(this.menuStrip1);
             this.Controls.Add(this.btn_da);
@@ -733,7 +735,7 @@
         private System.Windows.Forms.TextBox txt_prodNo;
         private System.Windows.Forms.Button btn_da;
         private System.Windows.Forms.StatusStrip statusBarPanel;
-        private System.Windows.Forms.Button btn_init;
+        private System.Windows.Forms.Button btn_start;
         private System.Windows.Forms.DataGridView dataGridView1;
         private System.Windows.Forms.Label lbl_q;
         private System.Windows.Forms.Label lbl_h;
@@ -760,7 +762,7 @@
         private System.Windows.Forms.Label lbl_cosphi3p;
         private System.Windows.Forms.Label lbl_iL3;
         private System.Windows.Forms.Label lbl_uL3;
-        private System.Windows.Forms.Button btn_start;
+        private System.Windows.Forms.Button btn_stop;
         private System.Windows.Forms.MenuStrip menuStrip1;
         private System.Windows.Forms.ToolStripMenuItem podešavanjaToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem oAplikacijiToolStripMenuItem;

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace TestBedPro
 {
-    class RadnaTacka
+    public class RadnaTacka
     {
         public double _q { get; set; }
         public double _h { get; set; }
