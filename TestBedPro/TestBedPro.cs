@@ -215,7 +215,7 @@ namespace TestBedPro
                 klikY = e.Y;
             }
         }
-        
+
         // dodavanje radne tacke u report
         private void btn_add_Click(object sender, EventArgs e)
         {
@@ -223,11 +223,11 @@ namespace TestBedPro
             temp._q = Convert.ToDouble(lbl_q.Text);
             temp._h = Convert.ToDouble(lbl_h.Text);
             //radnaTacka._q = Convert.ToDouble(lbl_q.Text);
-          //  radnaTacka._h = Convert.ToDouble(lbl_h.Text);
-            krivaPerformansi.Add(temp);
-          //  krivaPerformansi.Add(radnaTacka);
+            //  radnaTacka._h = Convert.ToDouble(lbl_h.Text);
+            _krivaPerformansi.Add(temp);
+            //  krivaPerformansi.Add(radnaTacka);
             dataGridView1.DataSource = null;
-            dataGridView1.DataSource=krivaPerformansi;
+            dataGridView1.DataSource = _krivaPerformansi;
         }
         
         // export radne tačke u report
