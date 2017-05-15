@@ -32,7 +32,6 @@
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.txt_prodNo = new System.Windows.Forms.TextBox();
             this.btn_da = new System.Windows.Forms.Button();
-            this.deviceComboBox = new System.Windows.Forms.ComboBox();
             this.statusBarPanel = new System.Windows.Forms.StatusStrip();
             this.btn_init = new System.Windows.Forms.Button();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
@@ -85,6 +84,9 @@
             this.label18 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
             this.btn_remove = new System.Windows.Forms.Button();
+            this.dataGridView2 = new System.Windows.Forms.DataGridView();
+            this.labelX = new System.Windows.Forms.Label();
+            this.labelY = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.groupBox1.SuspendLayout();
@@ -92,6 +94,7 @@
             this.groupBox3.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             this.groupBox4.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridView2)).BeginInit();
             this.SuspendLayout();
             // 
             // pictureBox1
@@ -103,7 +106,7 @@
             this.pictureBox1.Size = new System.Drawing.Size(700, 600);
             this.pictureBox1.TabIndex = 1;
             this.pictureBox1.TabStop = false;
-           // this.pictureBox1.Paint += new System.Windows.Forms.PaintEventHandler(this.pictureBox1_Paint);
+            this.pictureBox1.Paint += new System.Windows.Forms.PaintEventHandler(this.pictureBox1_Paint);
             this.pictureBox1.MouseClick += new System.Windows.Forms.MouseEventHandler(this.pictureBox1_MouseClick);
             // 
             // txt_prodNo
@@ -124,14 +127,6 @@
             this.btn_da.UseVisualStyleBackColor = true;
             this.btn_da.Click += new System.EventHandler(this.btn_da_Click);
             // 
-            // deviceComboBox
-            // 
-            this.deviceComboBox.FormattingEnabled = true;
-            this.deviceComboBox.Location = new System.Drawing.Point(12, 36);
-            this.deviceComboBox.Name = "deviceComboBox";
-            this.deviceComboBox.Size = new System.Drawing.Size(121, 21);
-            this.deviceComboBox.TabIndex = 8;
-            // 
             // statusBarPanel
             // 
             this.statusBarPanel.Location = new System.Drawing.Point(0, 964);
@@ -141,7 +136,7 @@
             // 
             // btn_init
             // 
-            this.btn_init.Location = new System.Drawing.Point(139, 34);
+            this.btn_init.Location = new System.Drawing.Point(12, 33);
             this.btn_init.Name = "btn_init";
             this.btn_init.Size = new System.Drawing.Size(75, 23);
             this.btn_init.TabIndex = 12;
@@ -438,7 +433,7 @@
             // btn_start
             // 
             this.btn_start.Enabled = false;
-            this.btn_start.Location = new System.Drawing.Point(220, 34);
+            this.btn_start.Location = new System.Drawing.Point(104, 33);
             this.btn_start.Name = "btn_start";
             this.btn_start.Size = new System.Drawing.Size(75, 23);
             this.btn_start.TabIndex = 40;
@@ -485,6 +480,7 @@
             this.pB_q.Name = "pB_q";
             this.pB_q.Size = new System.Drawing.Size(121, 30);
             this.pB_q.TabIndex = 43;
+            this.pB_q.Value = 22;
             // 
             // pB_h
             // 
@@ -493,17 +489,19 @@
             this.pB_h.Size = new System.Drawing.Size(121, 30);
             this.pB_h.Step = 100;
             this.pB_h.TabIndex = 43;
+            this.pB_h.UseWaitCursor = true;
+            this.pB_h.Value = 10;
             // 
             // h1
             // 
-            this.h1.Location = new System.Drawing.Point(821, 339);
+            this.h1.Location = new System.Drawing.Point(816, 536);
             this.h1.Name = "h1";
             this.h1.Size = new System.Drawing.Size(218, 20);
             this.h1.TabIndex = 44;
             // 
             // q1
             // 
-            this.q1.Location = new System.Drawing.Point(821, 365);
+            this.q1.Location = new System.Drawing.Point(816, 562);
             this.q1.Name = "q1";
             this.q1.Size = new System.Drawing.Size(218, 20);
             this.q1.TabIndex = 45;
@@ -571,14 +569,14 @@
             // 
             // textBox1
             // 
-            this.textBox1.Location = new System.Drawing.Point(821, 391);
+            this.textBox1.Location = new System.Drawing.Point(816, 588);
             this.textBox1.Name = "textBox1";
             this.textBox1.Size = new System.Drawing.Size(218, 20);
             this.textBox1.TabIndex = 44;
             // 
             // textBox2
             // 
-            this.textBox2.Location = new System.Drawing.Point(821, 417);
+            this.textBox2.Location = new System.Drawing.Point(816, 614);
             this.textBox2.Name = "textBox2";
             this.textBox2.Size = new System.Drawing.Size(218, 20);
             this.textBox2.TabIndex = 45;
@@ -586,7 +584,7 @@
             // label7
             // 
             this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(744, 368);
+            this.label7.Location = new System.Drawing.Point(739, 565);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(44, 13);
             this.label7.TabIndex = 46;
@@ -595,7 +593,7 @@
             // label16
             // 
             this.label16.AutoSize = true;
-            this.label16.Location = new System.Drawing.Point(744, 344);
+            this.label16.Location = new System.Drawing.Point(739, 541);
             this.label16.Name = "label16";
             this.label16.Size = new System.Drawing.Size(51, 13);
             this.label16.TabIndex = 47;
@@ -604,7 +602,7 @@
             // label17
             // 
             this.label17.AutoSize = true;
-            this.label17.Location = new System.Drawing.Point(744, 420);
+            this.label17.Location = new System.Drawing.Point(739, 617);
             this.label17.Name = "label17";
             this.label17.Size = new System.Drawing.Size(35, 13);
             this.label17.TabIndex = 46;
@@ -613,7 +611,7 @@
             // label18
             // 
             this.label18.AutoSize = true;
-            this.label18.Location = new System.Drawing.Point(744, 398);
+            this.label18.Location = new System.Drawing.Point(739, 595);
             this.label18.Name = "label18";
             this.label18.Size = new System.Drawing.Size(35, 13);
             this.label18.TabIndex = 47;
@@ -638,11 +636,45 @@
             this.btn_remove.UseVisualStyleBackColor = true;
             this.btn_remove.Click += new System.EventHandler(this.btn_remove_Click);
             // 
+            // dataGridView2
+            // 
+            this.dataGridView2.AllowUserToAddRows = false;
+            this.dataGridView2.AllowUserToDeleteRows = false;
+            this.dataGridView2.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dataGridView2.Location = new System.Drawing.Point(747, 123);
+            this.dataGridView2.Name = "dataGridView2";
+            this.dataGridView2.ReadOnly = true;
+            this.dataGridView2.Size = new System.Drawing.Size(240, 94);
+            this.dataGridView2.TabIndex = 53;
+            // 
+            // labelX
+            // 
+            this.labelX.AutoSize = true;
+            this.labelX.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.labelX.Location = new System.Drawing.Point(769, 284);
+            this.labelX.Name = "labelX";
+            this.labelX.Size = new System.Drawing.Size(82, 29);
+            this.labelX.TabIndex = 54;
+            this.labelX.Text = "Q max";
+            // 
+            // labelY
+            // 
+            this.labelY.AutoSize = true;
+            this.labelY.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.labelY.Location = new System.Drawing.Point(769, 319);
+            this.labelY.Name = "labelY";
+            this.labelY.Size = new System.Drawing.Size(80, 29);
+            this.labelY.TabIndex = 55;
+            this.labelY.Text = "H max";
+            // 
             // TestBedPro
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1264, 986);
+            this.Controls.Add(this.labelY);
+            this.Controls.Add(this.labelX);
+            this.Controls.Add(this.dataGridView2);
             this.Controls.Add(this.btn_remove);
             this.Controls.Add(this.groupBox4);
             this.Controls.Add(this.btn_save);
@@ -670,7 +702,6 @@
             this.Controls.Add(this.btn_init);
             this.Controls.Add(this.statusBarPanel);
             this.Controls.Add(this.menuStrip1);
-            this.Controls.Add(this.deviceComboBox);
             this.Controls.Add(this.btn_da);
             this.Controls.Add(this.txt_prodNo);
             this.Controls.Add(this.pictureBox1);
@@ -690,6 +721,7 @@
             this.menuStrip1.PerformLayout();
             this.groupBox4.ResumeLayout(false);
             this.groupBox4.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridView2)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -700,7 +732,6 @@
         private System.Windows.Forms.PictureBox pictureBox1;
         private System.Windows.Forms.TextBox txt_prodNo;
         private System.Windows.Forms.Button btn_da;
-        private System.Windows.Forms.ComboBox deviceComboBox;
         private System.Windows.Forms.StatusStrip statusBarPanel;
         private System.Windows.Forms.Button btn_init;
         private System.Windows.Forms.DataGridView dataGridView1;
@@ -753,6 +784,9 @@
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.ToolStripMenuItem podesavanjaToolStripMenuItem;
         private System.Windows.Forms.Button btn_remove;
+        private System.Windows.Forms.DataGridView dataGridView2;
+        private System.Windows.Forms.Label labelX;
+        private System.Windows.Forms.Label labelY;
     }
 }
 

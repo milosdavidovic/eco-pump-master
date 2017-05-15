@@ -35,10 +35,10 @@ C:\git-projects\eko-pump-master\TestBedPro\bin\Debug\Unme.Common.dll
 C:\git-projects\eko-pump-master\TestBedPro\bin\Debug\itextsharp.xml
 C:\git-projects\eko-pump-master\TestBedPro\bin\Debug\Interop.DTAcq32Lib.dll
 C:\git-projects\eko-pump-master\TestBedPro\bin\Debug\AxInterop.DTAcq32Lib.dll
-C:\git-projects\eko-pump-master\TestBedPro\obj\Debug\TestBedPro.csprojResolveAssemblyReference.cache
 C:\git-projects\eko-pump-master\TestBedPro\obj\Debug\TestBedPro.Podesavanja.resources
 C:\git-projects\eko-pump-master\TestBedPro\obj\Debug\TestBedPro.TestBedPro.resources
 C:\git-projects\eko-pump-master\TestBedPro\obj\Debug\TestBedPro.Properties.Resources.resources
 C:\git-projects\eko-pump-master\TestBedPro\obj\Debug\TestBedPro.Upit.resources
 C:\git-projects\eko-pump-master\TestBedPro\obj\Debug\TestBedPro.UpitP.resources
 C:\git-projects\eko-pump-master\TestBedPro\obj\Debug\TestBedPro.csproj.GenerateResource.Cache
+C:\git-projects\eko-pump-master\TestBedPro\obj\Debug\TestBedPro.csprojResolveAssemblyReference.cache

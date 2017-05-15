@@ -17,6 +17,9 @@ using System.IO.Ports;
 using iTextSharp.text.pdf;
 using System.Globalization;
 using System.Diagnostics;
+using System.Threading;
+
+
 namespace TestBedPro
 {
     public partial class TestBedPro : Form
@@ -27,7 +30,7 @@ namespace TestBedPro
 
       //  int BuffersCompleted;
         RadnaTacka radnaTacka= new RadnaTacka();
-      
+        
 
         int pritisak1;
         int protok1;
@@ -81,63 +84,83 @@ namespace TestBedPro
             {
                 MessageBox.Show("Port je vec otvoren" + ex.ToString());
             }
+
+            Thread t = new Thread(TimerEventProcessor);
+            t.Start();
            
         }
         //konekcija na ModBus
                 
-       private void TimerEventProcessor(object sender, EventArgs e)
+       private void TimerEventProcessor()
         {
-            if (serialPort.IsOpen)
-            {
-                ModbusSerialMaster master = ModbusSerialMaster.CreateRtu(serialPort);
-                master.Transport.ReadTimeout = 1000;
-                try
-                {
-                    ushort[] HH = master.ReadInputRegisters(2, 550, 1);
-                    ushort[] QQ = master.ReadInputRegisters(2, 551, 1);
-                   // if(slave2test.Count()>0)
-                    radnaTacka._h = HH[0];
-                    radnaTacka._q = QQ[0];
+           while(true)
+           {
+               int milliseconds = 500;
+               Thread.Sleep(milliseconds);
 
-                    ushort[] bratee = master.ReadInputRegisters(1, 28, 12);
-                    ushort[] snaga = master.ReadInputRegisters(1, 0, 12);
-                    ushort[] cosfi = master.ReadInputRegisters(1, 10, 2);
+               if (serialPort.IsOpen)
+               {
+                   ModbusSerialMaster master = ModbusSerialMaster.CreateRtu(serialPort);
+                   master.Transport.ReadTimeout = 1000;
 
-                    string[] riRString = bratee.Select(x => x.ToString("X")).ToArray();
-                    string[] pString = snaga.Select(x => x.ToString("X")).ToArray();
-                    short output = short.Parse(riRString[0], NumberStyles.HexNumber);
-                    
-                    radnaTacka._uL1 = Convert.ToDouble(riRString[0]) * Math.Pow(10, (short)bratee[1]);
-                    radnaTacka._uL2 = Convert.ToDouble(riRString[2]) * Math.Pow(10, (short)bratee[3]);
-                    radnaTacka._uL3 = Convert.ToDouble(riRString[4]) * Math.Pow(10, (short)bratee[5]);
-                    radnaTacka._iL1 = Convert.ToDouble(riRString[6]) * Math.Pow(10, (short)bratee[7]);
-                    radnaTacka._iL2 = Convert.ToDouble(riRString[8]) * Math.Pow(10, (short)bratee[9]);
-                    radnaTacka._iL3 = Convert.ToDouble(riRString[10]) * Math.Pow(10, (short)bratee[11]);
+                   try
+                   {
+                       ushort[] HH = master.ReadInputRegisters(2, 550, 1);
+                       ushort[] QQ = master.ReadInputRegisters(2, 551, 1);
+                       // if(slave2test.Count()>0)
+                       radnaTacka._h = HH[0];
+                       radnaTacka._q = QQ[0];
 
-                    radnaTacka._u3p = Convert.ToDouble(pString[0]) * Math.Pow(10, (short)snaga[1]);
-                    radnaTacka._i3p = Convert.ToDouble(pString[2]) * Math.Pow(10, (short)snaga[3]);
-                    radnaTacka._p3p = Convert.ToDouble(pString[4]) * Math.Pow(10, (short)snaga[5]);
-                    radnaTacka._cosphi3p = Convert.ToDouble(pString[10]) * Math.Pow(10, (short)snaga[11]);
+                       ushort[] bratee = master.ReadInputRegisters(1, 28, 12);
+                       ushort[] snaga = master.ReadInputRegisters(1, 0, 12);
+                       ushort[] cosfi = master.ReadInputRegisters(1, 10, 2);
 
-                    // u pboxu
-                    //lbl_h.Text = radnaTacka._h.ToString();
-                    //lbl_q.Text = radnaTacka._q.ToString();
-                }
-                catch(TimeoutException tex)
-                {
-                    Debug.WriteLine(tex.Message);
-                    textBox2.Text = tex.Message;
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show(ex.ToString());
+                       string[] riRString = bratee.Select(x => x.ToString("X")).ToArray();
+                       string[] pString = snaga.Select(x => x.ToString("X")).ToArray();
+                       short output = short.Parse(riRString[0], NumberStyles.HexNumber);
 
-                }
+                       radnaTacka._uL1 = Convert.ToDouble(riRString[0]) * Math.Pow(10, (short)bratee[1]);
+                       radnaTacka._uL2 = Convert.ToDouble(riRString[2]) * Math.Pow(10, (short)bratee[3]);
+                       radnaTacka._uL3 = Convert.ToDouble(riRString[4]) * Math.Pow(10, (short)bratee[5]);
+                       radnaTacka._iL1 = Convert.ToDouble(riRString[6]) * Math.Pow(10, (short)bratee[7]);
+                       radnaTacka._iL2 = Convert.ToDouble(riRString[8]) * Math.Pow(10, (short)bratee[9]);
+                       radnaTacka._iL3 = Convert.ToDouble(riRString[10]) * Math.Pow(10, (short)bratee[11]);
+
+                       radnaTacka._u3p = Convert.ToDouble(pString[0]) * Math.Pow(10, (short)snaga[1]);
+                       radnaTacka._i3p = Convert.ToDouble(pString[2]) * Math.Pow(10, (short)snaga[3]);
+                       radnaTacka._p3p = Convert.ToDouble(pString[4]) * Math.Pow(10, (short)snaga[5]);
+                       radnaTacka._cosphi3p = Convert.ToDouble(pString[10]) * Math.Pow(10, (short)snaga[11]);
+
+                       // u pboxu
+                       //lbl_h.Text = radnaTacka._h.ToString();
+                       //lbl_q.Text = radnaTacka._q.ToString();
+                   }
+                   catch (TimeoutException tex)
+                   {
+                       Debug.WriteLine(tex.Message);
+                       textBox2.Text = tex.Message;
+                   }
+                   catch (Exception ex)
+                   {
+                       MessageBox.Show(ex.ToString());
+
+                   }
+               }
             }
         }
         // povlači krivu sa GPC
         private void btn_da_Click(object sender, EventArgs e)
         {
+
+            
+            
+            tehKar karakteristike = new tehKar(txt_prodNo.Text);
+            
+            double x = karakteristike._CurveSetX.maximum;
+            double y = karakteristike._CurveSetY.maximum;
+
+            labelX.Text = "Q max"+x.ToString();
+            labelY.Text = "H max"+y.ToString();
             try
             {
                 pictureBox1.Load((new Uri("https://product-selection.grundfos.com/product-detail.pumpcurve.png?productnumber=" + txt_prodNo.Text + "&frequency=50&languagecode=SRL&productrange=GMA&unitsystem=4&w=700&h=600&dpi=144")).ToString());
@@ -147,6 +170,12 @@ namespace TestBedPro
             {
                 MessageBox.Show(ex.ToString());
             }
+
+           
+            
+            
+
+            
 
         }
         
@@ -165,6 +194,7 @@ namespace TestBedPro
            //this.Invoke(new EventHandler(TimerEventProcessor));
        
            pictureBox1.Invalidate();
+           
         }
 
  
@@ -313,7 +343,7 @@ namespace TestBedPro
             e.Graphics.DrawLine(myPen2, protok1 - 10, pritisak1, protok1 + 10, pritisak1);
             e.Graphics.DrawLine(myPen2, protok1, pritisak1 - 10, protok1, pritisak1 + 10);
 
-            this.Invoke(new EventHandler(TimerEventProcessor));
+            //this.Invoke(new EventHandler(TimerEventProcessor));
 
         }
         // ###########################################################################

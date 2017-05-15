@@ -113,6 +113,7 @@
             this.Controls.Add(this.txt_y);
             this.Name = "Upit";
             this.Text = "Upit";
+            this.Enter += new System.EventHandler(this.btn_ok_Click);
             this.ResumeLayout(false);
             this.PerformLayout();
 

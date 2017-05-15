@@ -40,6 +40,10 @@
     <Reference Include="Modbus">
       <HintPath>bin\Modbus.dll</HintPath>
     </Reference>
+    <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>.\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="OpenLayers.Base, Version=1.6.20.36, Culture=neutral, PublicKeyToken=1058f0463721e512, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\..\..\..\Program Files\Data Translation\DotNet\OLClassLib\Framework 2.0 Assemblies\OpenLayers.Base.dll</HintPath>
@@ -66,6 +70,7 @@
     <Compile Include="Podesavanja.Designer.cs">
       <DependentUpon>Podesavanja.cs</DependentUpon>
     </Compile>
+    <Compile Include="tehKar.cs" />
     <Compile Include="TestBedPro.cs">
       <SubType>Form</SubType>
     </Compile>
