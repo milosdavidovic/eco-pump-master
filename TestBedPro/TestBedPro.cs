@@ -25,7 +25,7 @@ namespace TestBedPro
     {
         SerialPort _serialPort; 
         ModbusDevice _device;
-        RadnaTacka _radnaTacka;
+        //RadnaTacka _radnaTacka;
         List<RadnaTacka> _krivaPerformansi;
 
         int pritisak1;
@@ -53,7 +53,7 @@ namespace TestBedPro
 
             _serialPort = new SerialPort();
             _device = new ModbusDevice();
-            _radnaTacka = new RadnaTacka();
+            //_radnaTacka = new RadnaTacka();
             _krivaPerformansi = new List<RadnaTacka>();
         }
 
@@ -219,7 +219,7 @@ namespace TestBedPro
         // dodavanje radne tacke u report
         private void btn_add_Click(object sender, EventArgs e)
         {
-            RadnaTacka temp = new RadnaTacka(_radnaTacka);
+            RadnaTacka temp = new RadnaTacka(_device.RadnaTacka);
             temp._q = Convert.ToDouble(lbl_q.Text);
             temp._h = Convert.ToDouble(lbl_h.Text);
             //radnaTacka._q = Convert.ToDouble(lbl_q.Text);
@@ -254,21 +254,21 @@ namespace TestBedPro
         private void pictureBox1_Paint(object sender, PaintEventArgs e)
         {
 
-            lbl_uL1.Text = _radnaTacka._uL1.ToString();
-            lbl_uL2.Text = _radnaTacka._uL2.ToString();
-            lbl_uL3.Text = _radnaTacka._uL3.ToString();
+            lbl_uL1.Text = _device.RadnaTacka._uL1.ToString();
+            lbl_uL2.Text = _device.RadnaTacka._uL2.ToString();
+            lbl_uL3.Text = _device.RadnaTacka._uL3.ToString();
 
-            lbl_iL1.Text = _radnaTacka._iL1.ToString();
-            lbl_iL2.Text = _radnaTacka._iL2.ToString();
-            lbl_iL3.Text = _radnaTacka._iL3.ToString();
+            lbl_iL1.Text = _device.RadnaTacka._iL1.ToString();
+            lbl_iL2.Text = _device.RadnaTacka._iL2.ToString();
+            lbl_iL3.Text = _device.RadnaTacka._iL3.ToString();
 
-            lbl_u3p.Text = _radnaTacka._u3p.ToString();
-            lbl_i3p.Text = _radnaTacka._i3p.ToString();
-            lbl_p3p.Text = _radnaTacka._p3p.ToString();
-            lbl_cosphi3p.Text = _radnaTacka._cosphi3p.ToString();
+            lbl_u3p.Text = _device.RadnaTacka._u3p.ToString();
+            lbl_i3p.Text = _device.RadnaTacka._i3p.ToString();
+            lbl_p3p.Text = _device.RadnaTacka._p3p.ToString();
+            lbl_cosphi3p.Text = _device.RadnaTacka._cosphi3p.ToString();
 
-            lbl_h.Text = Math.Round(_radnaTacka._h / 10, 2).ToString();
-            lbl_q.Text = Math.Round(_radnaTacka._q / 10, 2).ToString();
+            lbl_h.Text = Math.Round(_device.RadnaTacka._h / 10, 2).ToString();
+            lbl_q.Text = Math.Round(_device.RadnaTacka._q / 10, 2).ToString();
 
             skalaX = (double)xtacka / ((double)klikX - (double)nulaX);
             skalaY = (double)ytacka / ((double)nulaY - (double)klikY);
@@ -276,8 +276,8 @@ namespace TestBedPro
 
             try
             {
-                pritisak1 = nulaY - Convert.ToInt32(_radnaTacka._h / 10 / skalaY);
-                protok1 = nulaX + Convert.ToInt32(_radnaTacka._q / 10 / skalaX);
+                pritisak1 = nulaY - Convert.ToInt32(_device.RadnaTacka._h / 10 / skalaY);
+                protok1 = nulaX + Convert.ToInt32(_device.RadnaTacka._q / 10 / skalaX);
             }
             catch { }
             
@@ -287,7 +287,7 @@ namespace TestBedPro
 
             //pictureBox1.Refresh();
             //crtaj krsic za svaku radnu tacku u krivoj performansi
-            foreach (RadnaTacka rT in krivaPerformansi)
+            foreach (RadnaTacka rT in _krivaPerformansi)
             {
                 int tempX = nulaX + Convert.ToInt32(rT._q / skalaX);
                 int tempY = nulaY - Convert.ToInt32(rT._h / skalaY);
@@ -360,9 +360,9 @@ namespace TestBedPro
             addCell(naslov, "Datum: "  , 1, 1, 1, 11, 0);
             addCell(naslov, DateTime.Today.Date.ToShortDateString(), 1, 1, 0, 11, 1);
             addCell(naslov, "Korisnik", 1, 1, 0, 11, 1);
-            addCell(naslov, _radnaTacka._korisnik, 1, 1, 0, 11, 1);
+            addCell(naslov, _device.RadnaTacka._korisnik, 1, 1, 0, 11, 1);
             
-            addCell(naslov, _radnaTacka._referenca, 1, 1, 0, 11, 1);
+            addCell(naslov, _device.RadnaTacka._referenca, 1, 1, 0, 11, 1);
             document.Add(naslov);
 
             // razmak
@@ -405,7 +405,7 @@ namespace TestBedPro
             addCell(pdfTable, "", 1, 1);
            
             int i =1;
-            foreach (RadnaTacka r  in krivaPerformansi)
+            foreach (RadnaTacka r  in _krivaPerformansi)
             {
                 addCell(pdfTable, i.ToString()          , 1, 1, 0, 9, 1);
                 addCell(pdfTable, r._q.ToString()       , 1, 1, 0, 9, 1);
